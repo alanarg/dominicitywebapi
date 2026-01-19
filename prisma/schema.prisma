@@ -1,14 +1,98 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cargo {
+  cargo_id            Int        @id @default(autoincrement())
+  secretaria_id       Int
+  nome                String     @db.VarChar(150)
+  ativo               Boolean    @default(true)
+  data_hora_inclusao  DateTime   @default(now()) @db.Timestamp(6)
+  data_hora_alteracao DateTime   @default(now()) @db.Timestamp(6)
+  secretaria          secretaria @relation(fields: [secretaria_id], references: [secretaria_id], map: "fk_cargo_secretaria")
+  usuario             usuario[]
+
+  @@unique([secretaria_id, nome], map: "uq_cargo_secretaria_nome")
+}
+
+model modulo {
+  modulo_id           Int                @id @default(autoincrement())
+  nome                String             @unique @db.VarChar(150)
+  url                 String             @db.VarChar(150)
+  ativo               Boolean            @default(true)
+  data_hora_inclusao  DateTime           @default(now()) @db.Timestamp(6)
+  data_hora_alteracao DateTime           @default(now()) @db.Timestamp(6)
+  permissao_modulo    permissao_modulo[]
+}
+
+model permissao {
+  permissao_id        Int                @id @default(autoincrement())
+  usuario_id          Int
+  secretaria_id       Int
+  ativo               Boolean            @default(true)
+  data_hora_inclusao  DateTime           @default(now()) @db.Timestamp(6)
+  data_hora_alteracao DateTime           @default(now()) @db.Timestamp(6)
+  secretaria          secretaria         @relation(fields: [secretaria_id], references: [secretaria_id], map: "fk_permissao_secretaria")
+  usuario             usuario            @relation(fields: [usuario_id], references: [usuario_id], map: "fk_permissao_usuario")
+  permissao_modulo    permissao_modulo[]
+
+  @@unique([usuario_id, secretaria_id], map: "uq_permissao_usuario_secretaria")
+}
+
+model permissao_modulo {
+  permissao_modulo_id Int       @id @default(autoincrement())
+  permissao_id        Int
+  modulo_id           Int
+  ativo               Boolean   @default(true)
+  data_hora_inclusao  DateTime  @default(now()) @db.Timestamp(6)
+  data_hora_alteracao DateTime  @default(now()) @db.Timestamp(6)
+  modulo              modulo    @relation(fields: [modulo_id], references: [modulo_id], map: "fk_perm_mod_modulo")
+  permissao           permissao @relation(fields: [permissao_id], references: [permissao_id], map: "fk_perm_mod_permissao")
+
+  @@unique([permissao_id, modulo_id], map: "uq_permissao_modulo")
+}
+
+model prefeitura {
+  prefeitura_id       Int          @id @default(autoincrement())
+  nome                String       @db.VarChar(200)
+  coord_x             Decimal?     @db.Decimal(10, 6)
+  coord_y             Decimal?     @db.Decimal(10, 6)
+  ativo               Boolean      @default(true)
+  data_hora_inclusao  DateTime     @default(now()) @db.Timestamp(6)
+  data_hora_alteracao DateTime     @default(now()) @db.Timestamp(6)
+  secretaria          secretaria[]
+}
+
+model secretaria {
+  secretaria_id       Int         @id @default(autoincrement())
+  prefeitura_id       Int
+  nome                String      @db.VarChar(200)
+  sigla               String      @db.VarChar(20)
+  ativo               Boolean     @default(true)
+  data_hora_inclusao  DateTime    @default(now()) @db.Timestamp(6)
+  data_hora_alteracao DateTime    @default(now()) @db.Timestamp(6)
+  cargo               cargo[]
+  permissao           permissao[]
+  prefeitura          prefeitura  @relation(fields: [prefeitura_id], references: [prefeitura_id], map: "fk_secretaria_prefeitura")
+
+  @@unique([prefeitura_id, sigla], map: "uq_secretaria_prefeitura_sigla")
+}
+
+model usuario {
+  usuario_id          Int         @id @default(autoincrement())
+  nome                String      @db.VarChar(150)
+  cpf                 String      @unique @db.Char(11)
+  email               String      @unique @db.VarChar(150)
+  senha               String      @db.VarChar(255)
+  cargo_id            Int
+  ativo               Boolean     @default(true)
+  data_hora_inclusao  DateTime    @default(now()) @db.Timestamp(6)
+  data_hora_alteracao DateTime    @default(now()) @db.Timestamp(6)
+  permissao           permissao[]
+  cargo               cargo       @relation(fields: [cargo_id], references: [cargo_id], map: "fk_usuario_cargo")
 }
