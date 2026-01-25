@@ -93,7 +93,6 @@ model secretaria {
   empenho             empenho[]
   prefeitura          prefeitura @relation(fields: [prefeitura_id],references: [prefeitura_id],map: "fk_secretaria_prefeitura")
 
-  @@unique([prefeitura_id], map: "uq_secretaria_prefeitura_sigla")
 }
 
 // model secretaria {
