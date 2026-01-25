@@ -15,7 +15,6 @@ export class SecretariaController {
     return this.service.findAll();
   }
 
-
   @Put(':id')
   update(@Param('id') id: number, @Body() body) {
     return this.service.update(+id, body);

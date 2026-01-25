@@ -67,21 +67,49 @@ model prefeitura {
   data_hora_alteracao DateTime     @default(now()) @db.Timestamp(6)
   secretaria          secretaria[]
 }
-
 model secretaria {
-  secretaria_id       Int         @id @default(autoincrement())
+  secretaria_id       Int      @id @default(autoincrement())
   prefeitura_id       Int
-  nome                String      @db.VarChar(200)
-  sigla               String      @db.VarChar(20)
-  ativo               Boolean     @default(true)
-  data_hora_inclusao  DateTime    @default(now()) @db.Timestamp(6)
-  data_hora_alteracao DateTime    @default(now()) @db.Timestamp(6)
+
+  nome                String   @db.VarChar(200)
+  sigla               String   @db.VarChar(20)
+  descricao           String  @db.VarChar(500)
+  cor                 String  @db.VarChar(20)
+  icone               String @db.VarChar(50)
+  href                String  @db.VarChar(200)
+
+  orcamento_total     Decimal? @db.Decimal(15,2)
+
+  sistema_integrado   String  @db.VarChar(100)
+  fonte_dos_dados     String  @db.VarChar(200)
+
+  ativo               Boolean  @default(true)
+  data_hora_inclusao  DateTime @default(now()) @db.Timestamp(6)
+  data_hora_alteracao DateTime @updatedAt @db.Timestamp(6)
+
+  // Relacionamentos
   cargo               cargo[]
   permissao           permissao[]
-  prefeitura          prefeitura  @relation(fields: [prefeitura_id], references: [prefeitura_id], map: "fk_secretaria_prefeitura")
+  empenho             empenho[]
+  prefeitura          prefeitura @relation(fields: [prefeitura_id],references: [prefeitura_id],map: "fk_secretaria_prefeitura")
 
-  @@unique([prefeitura_id, sigla], map: "uq_secretaria_prefeitura_sigla")
+  @@unique([prefeitura_id], map: "uq_secretaria_prefeitura_sigla")
 }
+
+// model secretaria {
+//   secretaria_id       Int         @id @default(autoincrement())
+//   prefeitura_id       Int
+//   nome                String      @db.VarChar(200)
+//   sigla               String      @db.VarChar(20)
+//   ativo               Boolean     @default(true)
+//   data_hora_inclusao  DateTime    @default(now()) @db.Timestamp(6)
+//   data_hora_alteracao DateTime    @default(now()) @db.Timestamp(6)
+//   cargo               cargo[]
+//   permissao           permissao[]
+//   prefeitura          prefeitura  @relation(fields: [prefeitura_id], references: [prefeitura_id], map: "fk_secretaria_prefeitura")
+
+//   @@unique([prefeitura_id, sigla], map: "uq_secretaria_prefeitura_sigla")
+// }
 
 model usuario {
   usuario_id          Int         @id @default(autoincrement())
@@ -96,3 +124,29 @@ model usuario {
   permissao           permissao[]
   cargo               cargo       @relation(fields: [cargo_id], references: [cargo_id], map: "fk_usuario_cargo")
 }
+
+model empenho {
+  empenho_id          Int      @id @default(autoincrement())
+  secretaria_id       Int
+
+  descricao            String   @db.VarChar(300)
+  valor                Decimal  @db.Decimal(15,2)
+  valor_pago           Decimal  @default(0) @db.Decimal(15,2)
+  data                 DateTime
+  data_vencimento      DateTime
+  status               String   @db.VarChar(20)
+
+  rubrica              String  @db.VarChar(100)
+  setor_contabil       String  @db.VarChar(100)
+  projeto              String @db.VarChar(100)
+  fornecedor            String  @db.VarChar(200)
+  contrato_id          Int
+  fonte                String  @db.VarChar(100)
+
+  ativo                Boolean  @default(true)
+  data_hora_inclusao   DateTime @default(now())
+  data_hora_alteracao  DateTime @updatedAt
+
+  secretaria            secretaria @relation(fields: [secretaria_id],references: [secretaria_id])
+}
+
