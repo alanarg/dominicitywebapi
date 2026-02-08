@@ -10,9 +10,10 @@ import { PrefeituraModule } from './modules/prefeitura/prefeitura.module';
 import { SecretariaModule } from './modules/secretaria/secretaria.module';
 import { CargoModule } from './modules/cargo/cargo.module';
 import { PermissaoModuloRepository } from './modules/permisssaoModulo/permissao-modulo.repository';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
-  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule],
+  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule, MailModule],
   controllers: [AppController],
   providers: [AppService],
 })
