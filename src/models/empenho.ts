@@ -1,6 +1,6 @@
 export class Empenho {
   constructor(
-    public readonly empenho_id: number,
+    public  empenho_id: number,
     public secretaria_id: number,
 
     public descricao: string,
@@ -13,12 +13,12 @@ export class Empenho {
 
     public status: 'pendente' | 'pago' | 'vencido' | 'parcial',
 
-    public rubrica?: string,
-    public setor_contabil?: string,
-    public projeto?: string,
-    public fornecedor?: string,
-    public contrato_id?: number,
-    public fonte?: string,
+    public rubrica: string,
+    public setor_contabil: string,
+    public projeto: string,
+    public fornecedor: string,
+    public contrato_id: number,
+    public fonte: string,
 
     public ativo: boolean = true,
     public data_hora_inclusao: Date = new Date(),
