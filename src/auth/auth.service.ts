@@ -11,12 +11,12 @@ export class AuthService {
   ) {}
 
   async register(data: any) {
+    console.log(data);
     const senhaHash = await bcrypt.hash(data.senha, 10);
-
     const usuario = await this.prisma.usuario.create({
       data: {
         nome: data.nome,
-        cpf: data.cpf,
+        cpf: data.cpf.replace(/\D/g, ""),
         email: data.email,
         senha: senhaHash,
         cargo_id: data.cargo_id,
@@ -52,6 +52,15 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload),
     };
+  }
+
+  async users(){
+      const usuarios = await this.prisma.usuario.findMany({
+      where: { },
+    });
+
+    return usuarios
+
   }
 
   async me(usuario_id: number) {

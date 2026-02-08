@@ -67,32 +67,62 @@ model prefeitura {
   data_hora_alteracao DateTime     @default(now()) @db.Timestamp(6)
   secretaria          secretaria[]
 }
+
 model secretaria {
-  secretaria_id       Int      @id @default(autoincrement())
-  prefeitura_id       Int
+  secretaria_id Int @id @default(autoincrement())
+  prefeitura_id Int
 
-  nome                String   @db.VarChar(200)
-  sigla               String   @db.VarChar(20)
-  descricao           String  @db.VarChar(500)
-  cor                 String  @db.VarChar(20)
-  icone               String @db.VarChar(50)
-  href                String  @db.VarChar(200)
+  nome      String @db.VarChar(200)
+  sigla     String @db.VarChar(20)
+  descricao String @db.VarChar(500)
+  cor       String @db.VarChar(50)
+  icone     String @db.VarChar(50)
+  href      String @db.VarChar(200)
 
-  orcamento_total     Decimal? @db.Decimal(15,2)
 
-  sistema_integrado   String  @db.VarChar(100)
-  fonte_dos_dados     String  @db.VarChar(200)
+  orcamento_total Decimal @db.Decimal(15, 2)
+  total_empenhado Decimal @db.Decimal(15, 2)
+  total_pago      Decimal @db.Decimal(15, 2)
+
+  
+  risco_orcamentario String @db.VarChar(100)
+  risco_divida       String @db.VarChar(100)
+
+ 
+  sistema_integrado  String   @db.VarChar(100)
+  fonte_dos_dados    String   @db.VarChar(200)
+  ultima_atualizacao DateTime @db.Timestamp(6)
 
   ativo               Boolean  @default(true)
   data_hora_inclusao  DateTime @default(now()) @db.Timestamp(6)
   data_hora_alteracao DateTime @updatedAt @db.Timestamp(6)
 
-  // Relacionamentos
-  cargo               cargo[]
-  permissao           permissao[]
-  empenho             empenho[]
-  prefeitura          prefeitura @relation(fields: [prefeitura_id],references: [prefeitura_id],map: "fk_secretaria_prefeitura")
+  cargo        cargo[]
+  permissao    permissao[]
+  empenho      empenho[]
+  dados_anuais secretaria_dados_anuais[]
 
+  dados_avulsos dado_avulso[]
+
+  prefeitura prefeitura @relation(fields: [prefeitura_id], references: [prefeitura_id], map: "fk_secretaria_prefeitura")
+}
+
+model secretaria_dados_anuais {
+  id            Int @id @default(autoincrement())
+  secretaria_id Int
+
+  ano Int
+  mes Int
+
+  orcamento_total Decimal @db.Decimal(15, 2)
+  total_empenhado Decimal @db.Decimal(15, 2)
+  total_pago      Decimal @db.Decimal(15, 2)
+
+  criado_em DateTime @default(now())
+
+  secretaria secretaria @relation(fields: [secretaria_id], references: [secretaria_id])
+
+  @@unique([secretaria_id, ano, mes])
 }
 
 // model secretaria {
@@ -115,7 +145,7 @@ model usuario {
   nome                String      @db.VarChar(150)
   cpf                 String      @unique @db.Char(11)
   email               String      @unique @db.VarChar(150)
-  senha               String      @db.VarChar(255)
+  senha               String      @db.VarChar(550)
   cargo_id            Int
   ativo               Boolean     @default(true)
   data_hora_inclusao  DateTime    @default(now()) @db.Timestamp(6)
@@ -124,28 +154,115 @@ model usuario {
   cargo               cargo       @relation(fields: [cargo_id], references: [cargo_id], map: "fk_usuario_cargo")
 }
 
-model empenho {
-  empenho_id          Int      @id @default(autoincrement())
-  secretaria_id       Int
+model licitacao {
+  licitacao_id Int @id @default(autoincrement())
 
-  descricao            String   @db.VarChar(300)
-  valor                Decimal  @db.Decimal(15,2)
-  valor_pago           Decimal  @default(0) @db.Decimal(15,2)
-  data                 DateTime
-  data_vencimento      DateTime
-  status               String   @db.VarChar(20)
+  numero     String @unique @db.VarChar(50)
+  objeto     String @db.VarChar(300)
+  modalidade String @db.VarChar(100)
 
-  rubrica              String  @db.VarChar(100)
-  setor_contabil       String  @db.VarChar(100)
-  projeto              String @db.VarChar(100)
-  fornecedor            String  @db.VarChar(200)
-  contrato_id          Int
-  fonte                String  @db.VarChar(100)
+  valor_estimado Decimal @db.Decimal(15, 2)
 
-  ativo                Boolean  @default(true)
-  data_hora_inclusao   DateTime @default(now())
-  data_hora_alteracao  DateTime @updatedAt
+  status        String   @db.VarChar(300)
+  data_abertura DateTime
 
-  secretaria            secretaria @relation(fields: [secretaria_id],references: [secretaria_id])
+  // Relacionamentos
+  contratos contrato[]
+
+  // Controle
+  ativo               Boolean  @default(true)
+  data_hora_inclusao  DateTime @default(now())
+  data_hora_alteracao DateTime @updatedAt
+
+  @@index([status])
+  @@index([data_abertura])
 }
 
+model contrato {
+  contrato_id  Int  @id @default(autoincrement())
+  licitacao_id Int?
+
+  numero     String @unique @db.VarChar(50)
+  objeto     String @db.VarChar(300)
+  fornecedor String @db.VarChar(200)
+
+  valor_total   Decimal  @db.Decimal(15, 2)
+  data_vigencia DateTime
+
+  status String @db.VarChar(300)
+
+  // Relacionamentos
+  licitacao licitacao? @relation(fields: [licitacao_id], references: [licitacao_id])
+  empenhos  empenho[]
+
+  // Controle
+  ativo               Boolean  @default(true)
+  data_hora_inclusao  DateTime @default(now())
+  data_hora_alteracao DateTime @updatedAt
+
+  @@index([status])
+  @@index([data_vigencia])
+}
+
+model empenho {
+  empenho_id    Int  @id @default(autoincrement())
+  secretaria_id Int
+  contrato_id   Int?
+
+  descricao String @db.VarChar(300)
+
+  // Financeiro
+  valor      Decimal @db.Decimal(15, 2)
+  valor_pago Decimal @default(0) @db.Decimal(15, 2)
+
+  // Datas
+  data            DateTime
+  data_vencimento DateTime
+
+  // Status
+  status String @db.VarChar(300)
+
+  // Classificação
+  rubrica        String @db.VarChar(100)
+  setor_contabil String @db.VarChar(100)
+  projeto        String @db.VarChar(100)
+  fonte          String @db.VarChar(100)
+
+  fornecedor String @db.VarChar(200)
+
+  // Relacionamentos
+  secretaria secretaria @relation(fields: [secretaria_id], references: [secretaria_id])
+  contrato   contrato?  @relation(fields: [contrato_id], references: [contrato_id])
+
+  // Controle
+  ativo               Boolean  @default(true)
+  data_hora_inclusao  DateTime @default(now())
+  data_hora_alteracao DateTime @updatedAt
+
+  @@index([secretaria_id])
+  @@index([contrato_id])
+  @@index([status])
+  @@index([data])
+  @@index([data_vencimento])
+}
+
+model dado_avulso {
+  dado_avulso_id Int @id @default(autoincrement())
+
+  secretaria_id Int?
+  tipo          String @db.VarChar(100)
+  ano           Int?
+
+  dados Json // JSONB no Postgres
+
+  fonte String? @db.VarChar(200)
+
+  criado_em     DateTime @default(now())
+  atualizado_em DateTime @updatedAt
+
+  secretaria secretaria? @relation(fields: [secretaria_id], references: [secretaria_id])
+
+  @@index([tipo])
+  @@index([secretaria_id])
+  @@index([ano])
+}

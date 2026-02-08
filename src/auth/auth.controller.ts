@@ -10,6 +10,8 @@ export class AuthController {
 
   @Post('register')
   register(@Body() dto: RegisterDto) {
+    console.log(dto);
+    
     return this.authService.register(dto);
   }
 
@@ -22,5 +24,10 @@ export class AuthController {
   @Get('me')
   me(@Req() req) {
     return this.authService.me(req.user.sub);
+  }
+
+  @Get('users')
+  users(@Req() req) {
+    return this.authService.users();
   }
 }

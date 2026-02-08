@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "secretaria" ALTER COLUMN "cor" SET DATA TYPE VARCHAR(50);
