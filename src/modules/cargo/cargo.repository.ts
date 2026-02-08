@@ -7,10 +7,11 @@ import { cargo, Prisma } from '@prisma/client';
 export class CargoRepository extends BaseRepository<
   cargo,
   Prisma.cargoUncheckedCreateInput,
-  Prisma.cargoUncheckedUpdateInput
+  Prisma.cargoUncheckedUpdateInput,
+  "cargo_id"
 > {
   constructor(prisma: PrismaService) {
-    super(prisma, prisma.cargo);
+    super(prisma, prisma.cargo,"cargo_id");
   }
 
   findBySecretaria(secretaria_id: number) {

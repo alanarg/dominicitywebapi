@@ -7,9 +7,10 @@ import { modulo } from "@prisma/client";
 export class ModuloRepository extends BaseRepository<
   modulo,
   Omit<modulo, 'modulo_id'>,
-  Partial<modulo>
+  Partial<modulo>,
+  'modulo_id'
 > {
   constructor(prisma: PrismaService) {
-    super(prisma, prisma.modulo);
+    super(prisma, prisma.modulo,'modulo_id');
   }
 }

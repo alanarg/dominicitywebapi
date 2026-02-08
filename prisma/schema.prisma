@@ -9,15 +9,20 @@ datasource db {
 
 model cargo {
   cargo_id            Int        @id @default(autoincrement())
-  secretaria_id       Int
+
+  secretaria_id       Int?
+
   nome                String     @db.VarChar(150)
   ativo               Boolean    @default(true)
   data_hora_inclusao  DateTime   @default(now()) @db.Timestamp(6)
   data_hora_alteracao DateTime   @default(now()) @db.Timestamp(6)
-  secretaria          secretaria @relation(fields: [secretaria_id], references: [secretaria_id], map: "fk_cargo_secretaria")
+
+  secretaria          secretaria?  @relation(fields: [secretaria_id], references: [secretaria_id],map: "fk_cargo_secretaria")
+
   usuario             usuario[]
 
-  @@unique([secretaria_id, nome], map: "uq_cargo_secretaria_nome")
+  // ⚠️ índice ajustado (ver explicação abaixo)
+  @@unique([nome], map: "uq_cargo_secretaria_nome")
 }
 
 model modulo {

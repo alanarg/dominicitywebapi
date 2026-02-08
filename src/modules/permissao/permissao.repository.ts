@@ -7,9 +7,10 @@ import { permissao } from "@prisma/client";
 export class PermissaoRepository extends BaseRepository<
   permissao,
   Omit<permissao, 'permissao_id'>,
-  Partial<permissao>
+  Partial<permissao>,
+  'permissao_id'
 > {
   constructor(prisma: PrismaService) {
-    super(prisma, prisma.permissao);
+    super(prisma, prisma.permissao,'permissao_id');
   }
 }

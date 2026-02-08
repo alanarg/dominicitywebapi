@@ -7,9 +7,10 @@ import { prefeitura } from "@prisma/client";
 export class PrefeituraRepository extends BaseRepository<
   prefeitura,
   Omit<prefeitura, 'prefeitura_id'>,
-  Partial<prefeitura>
+  Partial<prefeitura>,
+  'prefeitura_id'
 > {
   constructor(prisma: PrismaService) {
-    super(prisma, prisma.prefeitura);
+    super(prisma, prisma.prefeitura,'prefeitura_id');
   }
 }

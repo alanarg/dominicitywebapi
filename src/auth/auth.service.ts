@@ -8,7 +8,7 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(data: any) {
     console.log(data);
@@ -29,24 +29,54 @@ export class AuthService {
     };
   }
 
+
   async login(email: string, senha: string) {
     const usuario = await this.prisma.usuario.findUnique({
       where: { email },
+      include: {
+        cargo: {
+          select: {
+            cargo_id: true,
+            nome: true,
+            secretaria: {
+              select: {
+                secretaria_id: true,
+                nome: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!usuario) {
-      throw new UnauthorizedException('Credenciais inválidas');
+      throw new UnauthorizedException("Credenciais inválidas");
     }
 
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
     if (!senhaValida) {
-      throw new UnauthorizedException('Credenciais inválidas');
+      throw new UnauthorizedException("Credenciais inválidas");
     }
 
     const payload = {
       sub: usuario.usuario_id,
       email: usuario.email,
+      nome: usuario.nome,
+
+      cargo: usuario.cargo
+        ? {
+          id: usuario.cargo.cargo_id,
+          nome: usuario.cargo.nome,
+        }
+        : null,
+
+      secretaria: usuario.cargo?.secretaria
+        ? {
+          id: usuario.cargo.secretaria.secretaria_id,
+          nome: usuario.cargo.secretaria.nome,
+        }
+        : null,
     };
 
     return {
@@ -54,9 +84,18 @@ export class AuthService {
     };
   }
 
-  async users(){
-      const usuarios = await this.prisma.usuario.findMany({
-      where: { },
+
+  async users() {
+    const usuarios = await this.prisma.usuario.findMany({
+      where: {},
+      include: {
+        cargo: {
+          include: {
+            secretaria: true
+
+          }
+        },
+      },
     });
 
     return usuarios
@@ -74,4 +113,31 @@ export class AuthService {
       },
     });
   }
+  async updateUser(userId: number, dto: any) {
+    return this.prisma.usuario.update({
+      where: {
+        usuario_id: userId,
+      },
+      data: {
+        ...dto,
+      },
+    });
+  }
+
+  async findByUser(userId: number) {
+    return this.prisma.usuario.findMany({
+      where: {
+        usuario_id: userId,
+      },
+      include: {
+        cargo: {
+          include: {
+            secretaria: true
+
+          }
+        },
+      },
+    });
+  }
+
 }
