@@ -128,6 +128,24 @@ model secretaria_dados_anuais {
   @@unique([secretaria_id, ano, mes])
 }
 
+model mensagem {
+  mensagem_id Int @id @default(autoincrement())
+
+  assunto     String @db.VarChar(150)
+  endereco    String @db.VarChar(300)
+  cpf         String @db.VarChar(14) // formato: 000.000.000-00
+  descricao   String @db.Text
+
+  // Controle
+  ativo               Boolean  @default(true)
+  data_hora_inclusao  DateTime @default(now())
+  data_hora_alteracao DateTime @updatedAt
+
+  @@index([cpf])
+  @@index([assunto])
+}
+
+
 // model secretaria {
 //   secretaria_id       Int         @id @default(autoincrement())
 //   prefeitura_id       Int

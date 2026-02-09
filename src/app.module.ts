@@ -11,9 +11,11 @@ import { SecretariaModule } from './modules/secretaria/secretaria.module';
 import { CargoModule } from './modules/cargo/cargo.module';
 import { PermissaoModuloRepository } from './modules/permisssaoModulo/permissao-modulo.repository';
 import { MailModule } from './modules/mail/mail.module';
+import { SocketModule } from './socket/socket.module';
+import { MensagemModule } from './modules/mensagem/mensagem.module';
 
 @Module({
-  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule, MailModule],
+  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule, MailModule,SocketModule, MensagemModule],
   controllers: [AppController],
   providers: [AppService],
 })
