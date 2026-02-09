@@ -11,7 +11,7 @@ export class ContratoRepository extends BaseRepository<
   "contrato_id"
 > {
   constructor(prisma: PrismaService) {
-    super(prisma, prisma.contrato,"contrato_id");
+    super(prisma, prisma.contrato, "contrato_id");
   }
 
   findBySecretaria(secretaria_id: number) {
@@ -19,6 +19,27 @@ export class ContratoRepository extends BaseRepository<
       where: {
         secretaria_id,
         ativo: true,
+      },
+    });
+  }
+
+  buscarContratosDaSecretaria(secretariaId: number) {
+    return this.prisma.contrato.findMany({
+      where: {
+        licitacao: {
+          secretaria_id: secretariaId,
+        },
+      },
+      include: {
+        licitacao: {
+          select: {
+            licitacao_id: true,
+            numero: true,
+          },
+        },
+      },
+      orderBy: {
+        data_vigencia: 'desc',
       },
     });
   }

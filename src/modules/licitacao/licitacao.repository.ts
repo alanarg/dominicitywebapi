@@ -22,4 +22,6 @@ export class LicitacaoRepository extends BaseRepository<
       },
     });
   }
+
+  
 }

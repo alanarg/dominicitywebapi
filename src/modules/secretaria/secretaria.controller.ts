@@ -3,7 +3,7 @@ import { SecretariaService } from "./secretaria.service";
 
 @Controller('secretarias')
 export class SecretariaController {
-  constructor(private readonly service: SecretariaService) {}
+  constructor(private readonly service: SecretariaService) { }
 
   @Post()
   create(@Body() body) {
@@ -23,5 +23,15 @@ export class SecretariaController {
   @Delete(':id')
   remove(@Param('id') id: number) {
     return this.service.delete(+id);
+  }
+
+  @Get('valores/:id')
+  findAllWithValues(@Param('id') id: number) {
+    return this.service.buscarIncludeValores(+id);
+  }
+
+  @Get('withempenho')
+  getWithEmpenho() {
+    return this.service.buscarIncludeEmpenho();
   }
 }

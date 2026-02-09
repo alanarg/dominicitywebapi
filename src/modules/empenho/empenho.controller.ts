@@ -15,7 +15,7 @@ export class EmpenhoController {
     return this.service.findAll();
   }
 
-  @Get('empenho/:id')
+  @Get('secretaria/:id')
   findBySecretaria(@Param('id') id: number) {
     return this.service.findBySecretaria(+id);
   }

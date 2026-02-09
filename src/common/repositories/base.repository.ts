@@ -35,4 +35,5 @@ export abstract class BaseRepository<T, CreateDto, UpdateDto,  ID extends string
       },
     });
   }
+  
 }
