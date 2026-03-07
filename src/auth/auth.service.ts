@@ -8,15 +8,15 @@ export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-  ) { }
+  ) {}
 
   async register(data: any) {
-    console.log(data);
     const senhaHash = await bcrypt.hash(data.senha, 10);
+
     const usuario = await this.prisma.usuario.create({
       data: {
         nome: data.nome,
-        cpf: data.cpf.replace(/\D/g, ""),
+        cpf: data.cpf.replace(/\D/g, ''),
         email: data.email,
         senha: senhaHash,
         cargo_id: data.cargo_id,
@@ -28,7 +28,6 @@ export class AuthService {
       email: usuario.email,
     };
   }
-
 
   async login(email: string, senha: string) {
     const usuario = await this.prisma.usuario.findUnique({
@@ -50,13 +49,13 @@ export class AuthService {
     });
 
     if (!usuario) {
-      throw new UnauthorizedException("Credenciais inválidas");
+      throw new UnauthorizedException('Credenciais inválidas');
     }
 
     const senhaValida = await bcrypt.compare(senha, usuario.senha);
 
     if (!senhaValida) {
-      throw new UnauthorizedException("Credenciais inválidas");
+      throw new UnauthorizedException('Credenciais inválidas');
     }
 
     const payload = {
@@ -66,16 +65,16 @@ export class AuthService {
 
       cargo: usuario.cargo
         ? {
-          id: usuario.cargo.cargo_id,
-          nome: usuario.cargo.nome,
-        }
+            id: usuario.cargo.cargo_id,
+            nome: usuario.cargo.nome,
+          }
         : null,
 
       secretaria: usuario.cargo?.secretaria
         ? {
-          id: usuario.cargo.secretaria.secretaria_id,
-          nome: usuario.cargo.secretaria.nome,
-        }
+            id: usuario.cargo.secretaria.secretaria_id,
+            nome: usuario.cargo.secretaria.nome,
+          }
         : null,
     };
 
@@ -84,22 +83,19 @@ export class AuthService {
     };
   }
 
-
   async users() {
     const usuarios = await this.prisma.usuario.findMany({
       where: {},
       include: {
         cargo: {
           include: {
-            secretaria: true
-
-          }
+            secretaria: true,
+          },
         },
       },
     });
 
-    return usuarios
-
+    return usuarios;
   }
 
   async me(usuario_id: number) {
@@ -132,12 +128,10 @@ export class AuthService {
       include: {
         cargo: {
           include: {
-            secretaria: true
-
-          }
+            secretaria: true,
+          },
         },
       },
     });
   }
-
 }
