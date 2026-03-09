@@ -13,9 +13,10 @@ import { PermissaoModuloRepository } from './modules/permisssaoModulo/permissao-
 import { MailModule } from './modules/mail/mail.module';
 import { SocketModule } from './socket/socket.module';
 import { MensagemModule } from './modules/mensagem/mensagem.module';
+import { ContratoModule } from './modules/contrato/contrato.module';
 
 @Module({
-  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule, MailModule,SocketModule, MensagemModule],
+  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule, MailModule,SocketModule, MensagemModule, ContratoModule],
   controllers: [AppController],
   providers: [AppService],
 })
