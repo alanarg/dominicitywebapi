@@ -14,9 +14,11 @@ import { MailModule } from './modules/mail/mail.module';
 import { SocketModule } from './socket/socket.module';
 import { MensagemModule } from './modules/mensagem/mensagem.module';
 import { ContratoModule } from './modules/contrato/contrato.module';
+import { DadoAvulsoModule } from './modules/dadoAvulso/dado-avulso.module';
+import { InteligenciaEconomicaModule } from './modules/inteligenciaEconomica/inteligencia-economica.module';
 
 @Module({
-  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule, MailModule,SocketModule, MensagemModule, ContratoModule],
+  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule, MailModule,SocketModule, MensagemModule, ContratoModule,DadoAvulsoModule, InteligenciaEconomicaModule],
   controllers: [AppController],
   providers: [AppService],
 })

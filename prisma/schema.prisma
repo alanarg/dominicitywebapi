@@ -105,7 +105,7 @@ model secretaria {
   licitacao    licitacao[]    
   dados_anuais secretaria_dados_anuais[]
 
-  dados_avulsos dado_avulso[]
+  tipo_dado_avulso tipo_dado_avulso[]
 
   prefeitura prefeitura @relation(fields: [prefeitura_id], references: [prefeitura_id], map: "fk_secretaria_prefeitura")
 }
@@ -270,11 +270,24 @@ model empenho {
   @@index([data_vencimento])
 }
 
+model tipo_dado_avulso {
+  tipo_dado_avulso_id Int @id @default(autoincrement())
+  secretaria_id      Int?
+  nome                String @db.VarChar(150)
+  descricao           String @db.VarChar(300)
+
+  dados_avulsos dado_avulso[]
+  
+  secretaria secretaria? @relation(fields: [secretaria_id], references: [secretaria_id]) 
+  @@index([secretaria_id])
+
+}
+
 model dado_avulso {
   dado_avulso_id Int @id @default(autoincrement())
 
   secretaria_id Int?
-  tipo          String @db.VarChar(100)
+  tipo_dado_avulso_id          Int
   ano           Int?
 
   dados Json // JSONB no Postgres
@@ -284,9 +297,8 @@ model dado_avulso {
   criado_em     DateTime @default(now())
   atualizado_em DateTime @updatedAt
 
-  secretaria secretaria? @relation(fields: [secretaria_id], references: [secretaria_id])
+  tipo_dado_avulso tipo_dado_avulso? @relation(fields: [tipo_dado_avulso_id], references: [tipo_dado_avulso_id])
 
-  @@index([tipo])
-  @@index([secretaria_id])
+  @@index([tipo_dado_avulso_id])
   @@index([ano])
 }
