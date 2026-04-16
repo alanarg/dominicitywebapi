@@ -1,9 +1,11 @@
 import { z } from 'zod';
 import { DtoOf } from './zod.dto';
 
-export const loginDtoSchema = z.object({
+export const enviarCadastroEmailDtoSchema = z.object({
   email: z.string().email().max(150),
   senha: z.string().min(1).max(550),
 });
 
-export type LoginDto = DtoOf<typeof loginDtoSchema>;
+export type EnviarCadastroEmailDto = DtoOf<
+  typeof enviarCadastroEmailDtoSchema
+>;

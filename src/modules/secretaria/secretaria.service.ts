@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
+import { CreateSecretariaDto, UpdateSecretariaDto } from "@/DTOs/secretaria.dto";
 import { SecretariaRepository } from "./secretaria.repository";
-import { Secretaria } from "@/models/secretaria";
 import _ from 'lodash';
 
 @Injectable()
 export class SecretariaService {
   constructor(private readonly repo: SecretariaRepository) { }
 
-  create(data: Omit<Secretaria, 'secretaria_id'>) {
+  create(data: CreateSecretariaDto) {
     return this.repo.create(data);
   }
 
@@ -15,7 +15,7 @@ export class SecretariaService {
     return this.repo.findAll();
   }
 
-  update(id: number, data: Partial<Secretaria>) {
+  update(id: number, data: UpdateSecretariaDto) {
     return this.repo.update(id, data);
   }
 

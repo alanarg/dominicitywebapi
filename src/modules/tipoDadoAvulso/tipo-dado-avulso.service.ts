@@ -1,14 +1,15 @@
 import { Injectable } from "@nestjs/common";
-import { Cargo } from "@/models/cargo";
+import {
+  CreateTipoDadoAvulsoDto,
+  UpdateTipoDadoAvulsoDto,
+} from "@/DTOs/tipo-dado-avulso.dto";
 import { TipoDadoAvulsoRepository } from "./tipo-dado-avulso.repository";
-import { TipoDadoAvulso } from "@/models/tipoDadoAvulso";
-import { tipo_dado_avulso } from "@prisma/client";
 
 @Injectable()
 export class TipoDadoAvulsoService {
   constructor(private readonly repo: TipoDadoAvulsoRepository) {}
 
-  create(data: Omit<tipo_dado_avulso, 'tipo_dado_avulso_id'>) {
+  create(data: CreateTipoDadoAvulsoDto) {
     return this.repo.create(data);
   }
 
@@ -20,7 +21,7 @@ export class TipoDadoAvulsoService {
     return this.repo.findBySecretaria(secretaria_id);
   }
 
-  update(id: number, data: Partial<Cargo>) {
+  update(id: number, data: UpdateTipoDadoAvulsoDto) {
     return this.repo.update(id, data);
   }
 

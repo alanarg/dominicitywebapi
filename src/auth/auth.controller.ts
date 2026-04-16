@@ -9,22 +9,25 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from '../DTOs/login.dto';
-import { RegisterDto } from '../DTOs/cadastro.dto';
+import { LoginDto, loginDtoSchema } from '../DTOs/login.dto';
+import { registerDtoSchema, updateUsuarioDtoSchema } from '../DTOs/cadastro.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { parseDto } from '@/DTOs/zod.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  register(@Body() dto: unknown) {
+    return this.authService.register(parseDto(registerDtoSchema, dto));
   }
 
   @Post('login')
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto.email, dto.senha);
+  login(@Body() dto: unknown) {
+    const loginDto: LoginDto = parseDto(loginDtoSchema, dto);
+
+    return this.authService.login(loginDto.email, loginDto.senha);
   }
 
   @UseGuards(AuthGuard('jwt'))
@@ -44,7 +47,7 @@ export class AuthController {
   }
 
   @Put('users/:id')
-  updateUser(@Param('id') id: number, @Body() dto: RegisterDto) {
-    return this.authService.updateUser(+id, dto);
+  updateUser(@Param('id') id: number, @Body() dto: unknown) {
+    return this.authService.updateUser(+id, parseDto(updateUsuarioDtoSchema, dto));
   }
 }

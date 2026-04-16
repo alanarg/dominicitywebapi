@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
+import { CreateCargoDto, UpdateCargoDto } from "@/DTOs/cargo.dto";
 import { CargoRepository } from "./cargo.repository";
-import { Cargo } from "@/models/cargo";
 
 @Injectable()
 export class CargoService {
   constructor(private readonly repo: CargoRepository) {}
 
-  create(data: Omit<Cargo, 'cargo_id'>) {
+  create(data: CreateCargoDto) {
     return this.repo.create(data);
   }
 
@@ -18,7 +18,7 @@ export class CargoService {
     return this.repo.findBySecretaria(secretaria_id);
   }
 
-  update(id: number, data: Partial<Cargo>) {
+  update(id: number, data: UpdateCargoDto) {
     return this.repo.update(id, data);
   }
 

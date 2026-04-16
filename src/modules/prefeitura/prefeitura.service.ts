@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
+import { CreatePrefeituraDto, UpdatePrefeituraDto } from "@/DTOs/prefeitura.dto";
 import { PrefeituraRepository } from "./prefeitura.repository";
-import { Prefeitura } from "@/models/prefeitura";
 
 @Injectable()
 export class PrefeituraService {
   constructor(private readonly repo: PrefeituraRepository) {}
 
-  create(data: Omit<Prefeitura, 'prefeitura_id'>) {
+  create(data: CreatePrefeituraDto) {
     return this.repo.create(data);
   }
 
@@ -14,7 +14,7 @@ export class PrefeituraService {
     return this.repo.findAll();
   }
 
-  update(id: number, data: Partial<Prefeitura>) {
+  update(id: number, data: UpdatePrefeituraDto) {
     return this.repo.update(id, data);
   }
 

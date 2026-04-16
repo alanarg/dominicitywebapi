@@ -1,15 +1,15 @@
 import { BaseRepository } from "@/common/repositories/base.repository";
 import { PrismaService } from "@/prisma/prisma.service";
 import { Injectable } from "@nestjs/common";
-import { secretaria } from "@prisma/client";
+import { Prisma, secretaria } from "@prisma/client";
 import _ from 'lodash';
 
 
 @Injectable()
 export class SecretariaRepository extends BaseRepository<
   secretaria,
-  Omit<secretaria, 'secretaria_id'>,
-  Partial<secretaria>,
+  Prisma.secretariaUncheckedCreateInput,
+  Prisma.secretariaUncheckedUpdateInput,
   'secretaria_id'
 > {
   constructor(prisma: PrismaService) {

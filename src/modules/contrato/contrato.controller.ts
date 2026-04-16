@@ -1,4 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import {
+  createContratoDtoSchema,
+  updateContratoDtoSchema,
+} from "@/DTOs/contrato.dto";
+import { parseDto } from "@/DTOs/zod.dto";
 import { ContratoService } from "./contrato.service";
 
 @Controller('contrato')
@@ -6,8 +11,8 @@ export class ContratoController {
   constructor(private readonly service: ContratoService) {}
 
   @Post()
-  create(@Body() body) {
-    return this.service.create(body);
+  create(@Body() body: unknown) {
+    return this.service.create(parseDto(createContratoDtoSchema, body));
   }
 
   @Get()
@@ -21,8 +26,8 @@ export class ContratoController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() body) {
-    return this.service.update(+id, body);
+  update(@Param('id') id: number, @Body() body: unknown) {
+    return this.service.update(+id, parseDto(updateContratoDtoSchema, body));
   }
 
   @Delete(':id')

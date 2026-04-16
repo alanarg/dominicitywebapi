@@ -1,4 +1,6 @@
 import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
+import { perguntaInteligenciaEconomicaDtoSchema } from "@/DTOs/inteligencia-economica.dto";
+import { parseDto } from "@/DTOs/zod.dto";
 import { InteligenciaEconomicaService } from "./inteligencia-economica.service";
 
 @Controller("inteligencia-economica")
@@ -16,18 +18,13 @@ export class InteligenciaEconomicaController {
   }
 
   @Post("perguntar")
-  askQuestion(
-    @Body()
-    body: {
-      secretariaId: number;
-      pergunta: string;
-      windowDays?: number;
-    },
-  ) {
+  askQuestion(@Body() body: unknown) {
+    const dto = parseDto(perguntaInteligenciaEconomicaDtoSchema, body);
+
     return this.service.askQuestion(
-      Number(body.secretariaId),
-      body.pergunta,
-      body.windowDays ? Number(body.windowDays) : undefined,
+      dto.secretariaId,
+      dto.pergunta,
+      dto.windowDays,
     );
   }
 }

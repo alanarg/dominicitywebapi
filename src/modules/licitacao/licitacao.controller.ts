@@ -1,4 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import {
+  createLicitacaoDtoSchema,
+  updateLicitacaoDtoSchema,
+} from "@/DTOs/licitacao.dto";
+import { parseDto } from "@/DTOs/zod.dto";
 import { LicitacaoService } from "./licitacao.service";
 
 @Controller('licitacao')
@@ -6,8 +11,8 @@ export class LicitacaoController {
   constructor(private readonly service: LicitacaoService) {}
 
   @Post()
-  create(@Body() body) {
-    return this.service.create(body);
+  create(@Body() body: unknown) {
+    return this.service.create(parseDto(createLicitacaoDtoSchema, body));
   }
 
   @Get()
@@ -21,8 +26,8 @@ export class LicitacaoController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() body) {
-    return this.service.update(+id, body);
+  update(@Param('id') id: number, @Body() body: unknown) {
+    return this.service.update(+id, parseDto(updateLicitacaoDtoSchema, body));
   }
 
   @Delete(':id')

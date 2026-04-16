@@ -1,4 +1,9 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import {
+  createSecretariaDtoSchema,
+  updateSecretariaDtoSchema,
+} from "@/DTOs/secretaria.dto";
+import { parseDto } from "@/DTOs/zod.dto";
 import { SecretariaService } from "./secretaria.service";
 
 @Controller('secretarias')
@@ -6,8 +11,8 @@ export class SecretariaController {
   constructor(private readonly service: SecretariaService) { }
 
   @Post()
-  create(@Body() body) {
-    return this.service.create(body);
+  create(@Body() body: unknown) {
+    return this.service.create(parseDto(createSecretariaDtoSchema, body));
   }
 
   @Get()
@@ -16,8 +21,8 @@ export class SecretariaController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() body) {
-    return this.service.update(+id, body);
+  update(@Param('id') id: number, @Body() body: unknown) {
+    return this.service.update(+id, parseDto(updateSecretariaDtoSchema, body));
   }
 
   @Delete(':id')

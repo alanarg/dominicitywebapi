@@ -1,4 +1,4 @@
-import { Empenho } from "@/models/empenho";
+import { CreateEmpenhoDto, UpdateEmpenhoDto } from "@/DTOs/empenho.dto";
 import { Injectable } from "@nestjs/common";
 import { EmpenhoRepository } from "./empenho.repository";
 
@@ -6,7 +6,7 @@ import { EmpenhoRepository } from "./empenho.repository";
 export class EmpenhoService {
   constructor(private readonly repo: EmpenhoRepository) {}
 
-  create(data: Omit<Empenho, 'empenho_id'>) {
+  create(data: CreateEmpenhoDto) {
     return this.repo.create(data);
   }
 
@@ -18,7 +18,7 @@ export class EmpenhoService {
     return this.repo.findBySecretaria(secretaria_id);
   }
 
-  update(id: number, data: Partial<Empenho>) {
+  update(id: number, data: UpdateEmpenhoDto) {
     return this.repo.update(id, data);
   }
 

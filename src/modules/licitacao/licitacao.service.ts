@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
+import { CreateLicitacaoDto, UpdateLicitacaoDto } from "@/DTOs/licitacao.dto";
 import { LicitacaoRepository } from "./licitacao.repository";
-import { Licitacao } from "@/models/licitacao";
 
 @Injectable()
 export class LicitacaoService {
   constructor(private readonly repo: LicitacaoRepository) {}
 
-  create(data: Omit<Licitacao, 'licitacao_id'>) {
+  create(data: CreateLicitacaoDto) {
     return this.repo.create(data);
   }
 
@@ -18,7 +18,7 @@ export class LicitacaoService {
     return this.repo.findBySecretaria(secretaria_id);
   }
 
-  update(id: number, data: Partial<Licitacao>) {
+  update(id: number, data: UpdateLicitacaoDto) {
     return this.repo.update(id, data);
   }
 

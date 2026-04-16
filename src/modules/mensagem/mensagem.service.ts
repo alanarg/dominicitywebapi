@@ -1,4 +1,4 @@
-import { Mensagem } from "@/models/mensagem";
+import { CreateMensagemDto, UpdateMensagemDto } from "@/DTOs/mensagem.dto";
 import { Injectable } from "@nestjs/common";
 import { MensagemRepository } from "./mensagem.repository";
 import { SocketGateway } from "@/socket/socket.gateway";
@@ -9,7 +9,7 @@ export class MensagemService {
     private readonly socket: SocketGateway
   ) { }
 
-  async create(data: Omit<Mensagem, 'mensagem_id'>) {
+  async create(data: CreateMensagemDto) {
     const mensagem = await this.repo.create(data);
 
     this.socket.emitirAtualizacao({
@@ -30,7 +30,7 @@ export class MensagemService {
     return this.repo.findBySecretaria(secretaria_id);
   }
 
-  update(id: number, data: Partial<Mensagem>) {
+  update(id: number, data: UpdateMensagemDto) {
     return this.repo.update(id, data);
   }
 

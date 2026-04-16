@@ -1,4 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { createEmpenhoDtoSchema, updateEmpenhoDtoSchema } from "@/DTOs/empenho.dto";
+import { parseDto } from "@/DTOs/zod.dto";
 import { EmpenhoService } from "./empenho.service";
 
 @Controller('empenho')
@@ -6,8 +8,8 @@ export class EmpenhoController {
   constructor(private readonly service: EmpenhoService) {}
 
   @Post()
-  create(@Body() body) {
-    return this.service.create(body);
+  create(@Body() body: unknown) {
+    return this.service.create(parseDto(createEmpenhoDtoSchema, body));
   }
 
   @Get()
@@ -21,8 +23,8 @@ export class EmpenhoController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() body) {
-    return this.service.update(+id, body);
+  update(@Param('id') id: number, @Body() body: unknown) {
+    return this.service.update(+id, parseDto(updateEmpenhoDtoSchema, body));
   }
 
   @Delete(':id')

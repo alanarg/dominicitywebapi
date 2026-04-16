@@ -16,10 +16,27 @@ import { MensagemModule } from './modules/mensagem/mensagem.module';
 import { ContratoModule } from './modules/contrato/contrato.module';
 import { DadoAvulsoModule } from './modules/dadoAvulso/dado-avulso.module';
 import { InteligenciaEconomicaModule } from './modules/inteligenciaEconomica/inteligencia-economica.module';
+import { LicitacaoModule } from './modules/licitacao/licitacao.module';
+import { EmpenhoModule } from './modules/empenho/empenho.module';
 
 @Module({
-  imports: [UsersModule, PrismaModule, AuthModule, PrefeituraModule, SecretariaModule, CargoModule, MailModule,SocketModule, MensagemModule, ContratoModule,DadoAvulsoModule, InteligenciaEconomicaModule],
+  imports: [
+    UsersModule,
+    PrismaModule,
+    AuthModule,
+    PrefeituraModule,
+    SecretariaModule,
+    CargoModule,
+    MailModule,
+    SocketModule, 
+    MensagemModule, 
+    ContratoModule, 
+    DadoAvulsoModule, 
+    InteligenciaEconomicaModule,
+    LicitacaoModule,
+    EmpenhoModule
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }

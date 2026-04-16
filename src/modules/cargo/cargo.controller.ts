@@ -1,4 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from "@nestjs/common";
+import { createCargoDtoSchema, updateCargoDtoSchema } from "@/DTOs/cargo.dto";
+import { parseDto } from "@/DTOs/zod.dto";
 import { CargoService } from "./cargo.service";
 
 @Controller('cargos')
@@ -6,8 +8,8 @@ export class CargoController {
   constructor(private readonly service: CargoService) {}
 
   @Post()
-  create(@Body() body) {
-    return this.service.create(body);
+  create(@Body() body: unknown) {
+    return this.service.create(parseDto(createCargoDtoSchema, body));
   }
 
   @Get()
@@ -21,8 +23,8 @@ export class CargoController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() body) {
-    return this.service.update(+id, body);
+  update(@Param('id') id: number, @Body() body: unknown) {
+    return this.service.update(+id, parseDto(updateCargoDtoSchema, body));
   }
 
   @Delete(':id')

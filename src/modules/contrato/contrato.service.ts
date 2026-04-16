@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
+import { CreateContratoDto, UpdateContratoDto } from "@/DTOs/contrato.dto";
 import { ContratoRepository } from "./contrato.repository";
-import { Contrato } from "@/models/contrato";
 
 @Injectable()
 export class ContratoService {
   constructor(private readonly repo: ContratoRepository) {}
 
-  create(data: Omit<Contrato, 'contrato_id'>) {
+  create(data: CreateContratoDto) {
     return this.repo.create(data);
   }
 
@@ -18,7 +18,7 @@ export class ContratoService {
     return this.repo.findBySecretaria(secretaria_id);
   }
 
-  update(id: number, data: Partial<Contrato>) {
+  update(id: number, data: UpdateContratoDto) {
     return this.repo.update(id, data);
   }
 
