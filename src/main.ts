@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { JsonExceptionFilter } from './common/filters/json-exception.filter';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -10,6 +11,8 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
   });
+
+  app.useGlobalFilters(new JsonExceptionFilter());
 
   await app.listen(process.env.PORT ?? 8080);
 }

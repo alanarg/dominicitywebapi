@@ -29,10 +29,13 @@ export class InteligenciaEconomicaService {
   async askQuestion(
     secretariaId: number,
     question: string,
-    windowDays?: number,
+    windowDays: number,
   ) {
     const report = await this.findBySecretaria(secretariaId, windowDays);
+    const answer = answerEconomicQuestion(report, question);
 
-    return answerEconomicQuestion(report, question);
+    return {
+      resposta: answer.resposta,
+    };
   }
 }

@@ -18,12 +18,14 @@ export function parseDto<TSchema extends z.ZodTypeAny>(
   const parsed = schema.safeParse(data);
 
   if (!parsed.success) {
+    const errors = parsed.error.issues.map((issue) => ({
+      campo: issue.path.join('.'),
+      mensagem: issue.message,
+    }));
+
     throw new BadRequestException({
-      message: 'Dados invalidos',
-      errors: parsed.error.issues.map((issue) => ({
-        campo: issue.path.join('.'),
-        mensagem: issue.message,
-      })),
+      message: errors[0]?.mensagem ?? 'Dados invalidos',
+      errors,
     });
   }
 

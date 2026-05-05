@@ -1,6 +1,16 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post, Query } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+  UseGuards,
+} from "@nestjs/common";
 import { perguntaInteligenciaEconomicaDtoSchema } from "@/DTOs/inteligencia-economica.dto";
 import { parseDto } from "@/DTOs/zod.dto";
+import { JwtAuthGuard } from "@/auth/jwt-auth.guard";
 import { InteligenciaEconomicaService } from "./inteligencia-economica.service";
 
 @Controller("inteligencia-economica")
